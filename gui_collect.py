@@ -3,7 +3,6 @@ from tkinter.colorchooser import askcolor
 import save_load
 import os
 
-
 class SaveDialog:
 
     def __init__(self, parent):
@@ -49,6 +48,8 @@ class Application(Frame):
 
         self.pack(expand=1, fill=BOTH)
         self.createWidgets()
+		
+        self.root = master;
 
         master.bind('+', self.thicknessPlus)
         master.bind('-', self.thicknessMinus)
@@ -147,16 +148,17 @@ class Application(Frame):
         self.coordinates.append([self.previousX, self.previousY])
 
     def SClick(self):
-        sDialog = SaveDialog(root)
-        root.wait_window(sDialog.top)
+        sDialog = SaveDialog(self.root)
+        self.root.wait_window(sDialog.top)
         print('File path : ', sDialog.filepath)
         self.save(sDialog.filepath)
 
     def LClick(self):
-        lDialog = LoadDialog(root)
-        root.wait_window(lDialog.top)
-        print('File path : ', lDialog.filepath)
-        self.load(lDialog.filepath)
+        lDialog = LoadDialog(self.root)
+        self.root.wait_window(lDialog.top)
+        if  hasattr(lDialog, 'filepath'):
+            print('File path : ', lDialog.filepath)
+            self.load(lDialog.filepath)
 
     def delteAll(self):
         self.myCanvas.delete("all")

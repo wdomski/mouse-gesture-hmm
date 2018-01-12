@@ -92,11 +92,11 @@ class DiscreteHMM(HMM):
         #   alpha[s][t+1] = self.emission_pb[s, sequence[t+1]] * np.sum(alpha[:,t] * self.transition_pb[:,s])
         # print("alpha_new", alpha)
         alpha_v = np.ndarray(shape=(self.n, len(sequence)))
-        alpha_v[:, 0] = self.pi * self.emission_pb[:, sequence[0]]
+        alpha_v[:, 0] = self.pi * self.emission_pb[:, int(sequence[0])]
 
         for t in range(len(sequence) - 1):
             f = alpha_v[:, t].reshape(self.n, 1)  #
-            alpha_v[:, t+1] = np.sum(f * self.transition_pb, axis=0) * self.emission_pb[:, sequence[t+1]]
+            alpha_v[:, t+1] = np.sum(f * self.transition_pb, axis=0) * self.emission_pb[:, int(sequence[t+1])]
         return (alpha_v)
 
     def backward(self, sequence):
@@ -104,7 +104,7 @@ class DiscreteHMM(HMM):
         beta_v = np.ones(shape=(self.n, len(sequence)))
         for t in reversed(range(len(sequence) - 1)):
             b = beta_v[:, t + 1].reshape(1, self.n)
-            beta_v[:, t] = np.sum(b * self.emission_pb[:, sequence[t + 1]].reshape(1, self.n) * self.transition_pb, axis=1)
+            beta_v[:, t] = np.sum(b * self.emission_pb[:, int(sequence[t + 1])].reshape(1, self.n) * self.transition_pb, axis=1)
         return beta_v
 
 
@@ -142,7 +142,7 @@ class DiscreteHMM(HMM):
                 for t in range(T-1):
                     for i in range(self.n):
                         for j in range(self.n):
-                            zi[i, j, t] = alpha[i, t] * self.transition_pb[i, j] * beta[j, t+1] * self.emission_pb[j, sequence[t+1]] / (ev) # this is needed to keep track of finding a state i at a time t and j at a time (t+1) for all i and all j and all t
+                            zi[i, j, t] = alpha[i, t] * self.transition_pb[i, j] * beta[j, t+1] * self.emission_pb[j, int(sequence[t+1])] / (ev) # this is needed to keep track of finding a state i at a time t and j at a time (t+1) for all i and all j and all t
 
                 self.pi = gamma[:, 0]
                 print("pi",self.pi)

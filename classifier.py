@@ -1,4 +1,4 @@
-from path import path
+from path import Path
 import pickle
 from quantize import quantize_sample
 from hmm import *
@@ -11,7 +11,7 @@ class Classifier:
         self.q = q
         if pretrained == False:
             self.data = []
-            for f in path(p).files(pattern='*.txt'):
+            for f in Path(p).files(pattern='*.txt'):
                 with open(f, "rb") as fp:
                     b = pickle.load(fp)
                     lenb = len(b)
